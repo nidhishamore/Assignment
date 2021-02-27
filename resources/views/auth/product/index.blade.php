@@ -1,4 +1,4 @@
-@extends('product.layout')
+@extends('auth.product.layout')
 
 @section('content')
 

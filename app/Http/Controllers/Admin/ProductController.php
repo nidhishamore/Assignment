@@ -13,6 +13,7 @@ class ProductController extends Controller
     protected $productService;
     public function __construct(ProductService $productService)
     {
+        $this->middleware('auth');
         $this->productService = $productService;
     }
     /**
@@ -24,7 +25,7 @@ class ProductController extends Controller
     {
         $products = $this->productService->paginate();
 
-        return view('product.index', ['products' => $products])->with('i', (request()->input('page', 1) - 1) * 5);;
+        return view('auth.product.index', ['products' => $products])->with('i', (request()->input('page', 1) - 1) * 5);;
     }
 
     /**
@@ -34,7 +35,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('product.create');
+        return view('auth.product.create');
     }
 
     /**
@@ -56,7 +57,7 @@ class ProductController extends Controller
                         ->with('success', 'Product successfully stored.'); 
         } catch (\Exception $ex) {
             DB::rollback();
-            return $ex;
+            return $ex->getMessage();
         }
     }
 
@@ -69,7 +70,7 @@ class ProductController extends Controller
     public function show($product_id)
     {
         $product = $this->productService->getById($product_id);
-        return view('product.show',['product' => $product]);
+        return view('auth.product.show',['product' => $product]);
     }
 
     /**
@@ -81,7 +82,7 @@ class ProductController extends Controller
     public function edit($product_id)
     {
         $product = $this->productService->getById($product_id);
-        return view('product.edit',['product' => $product]);
+        return view('auth.product.edit',['product' => $product]);
     }
 
     /**
@@ -105,7 +106,7 @@ class ProductController extends Controller
                         ->with('success', 'Product updated stored.'); 
         } catch (\Exception $ex) {
             DB::rollback();
-            return $ex;
+            return $ex->getMessage();
         }
     }
 
@@ -128,7 +129,7 @@ class ProductController extends Controller
                         ->with('success', 'Product deleted.'); 
         } catch (\Exception $ex) {
             DB::rollback();
-            return $ex;
+            return $ex->getMessage();
         }
     }
 }

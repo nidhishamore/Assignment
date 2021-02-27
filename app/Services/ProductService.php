@@ -40,7 +40,8 @@ class ProductService
 
 	public function update($product, $productData)
 	{
-		$productData['image'] = (!is_null($productData['image']) && array_key_exists('image', $productData)) ? $this->saveImage($productData['image']) : $product->image;
+		if (array_key_exists('image', $productData))
+			$productData['image'] = $this->saveImage($productData['image']);
 		return $product->update($productData);
 	}
 

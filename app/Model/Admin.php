@@ -2,9 +2,10 @@
 
 namespace App\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Hash;
 
-class Admin extends Model
+class Admin extends Authenticatable
 {
 	/**
      * The primary key associated with the table.
