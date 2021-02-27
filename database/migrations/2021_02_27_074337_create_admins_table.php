@@ -13,9 +13,15 @@ class CreateAdminsTable extends Migration
      */
     public function up()
     {
+        DB::statement('CREATE SEQUENCE IF NOT EXISTS admin_sequence START 10001 MINVALUE 10001 MAXVALUE 99999 CYCLE');
         Schema::create('admins', function (Blueprint $table) {
-            $table->id();
+            $table->bigInteger('admin_id')->primary();
+            $table->string('name', 100);
+            $table->string('email', 50)->unique();
+            $table->string('password');
+            $table->boolean('status');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +32,7 @@ class CreateAdminsTable extends Migration
      */
     public function down()
     {
+        DB::statement('DROP SEQUENCE admin_sequence');
         Schema::dropIfExists('admins');
     }
 }
