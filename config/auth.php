@@ -39,10 +39,20 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+            'hash' => false,
         ],
-
-        'api' => [
-            'driver' => 'token',
+        // 'api' => [
+        //     'driver' => 'token',
+        //     'provider' => 'users',
+        //     'hash' => false,
+        // ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+            'hash' => false,
+        ],
+        'user' => [
+            'driver' => 'session',
             'provider' => 'users',
             'hash' => false,
         ],
@@ -68,13 +78,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Model\Customer::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Model\Admin::class,
+        ],
     ],
 
     /*

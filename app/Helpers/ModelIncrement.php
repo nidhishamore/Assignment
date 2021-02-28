@@ -7,7 +7,7 @@ use Exception;
 
 class ModelIncremental
 {
-	protected static $sequences = ['admin', 'product', 'user'];
+	protected static $sequences = ['admin', 'product', 'customer'];
     /**
      * [generateIncrementId description].
      *

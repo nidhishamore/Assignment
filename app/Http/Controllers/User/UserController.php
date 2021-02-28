@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Model\Admin;
 
-class AdminController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +14,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('auth.admin.dashboard');
+        return view('auth.user.dashboard');
     }
 
     /**
@@ -25,7 +24,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**

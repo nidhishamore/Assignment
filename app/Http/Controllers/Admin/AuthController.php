@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use App\Services\AuthService;
 use DB;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -22,7 +20,6 @@ class AuthController extends Controller
     protected $authService;
     public function __construct(AuthService $authService)
     {
-        $this->middleware('guest');
         $this->authService = $authService;
     }
 
@@ -30,18 +27,20 @@ class AuthController extends Controller
     {
     	$request->validate([
             'name' => 'required|string|max:100',
-            'email' => 'required|email|max:50|unique:admins',
+            'email' => 'required|email|max:50',
             'password' => 'required|string|min:8|confirmed',
         ]);
     	DB::beginTransaction();
         try {
-        	$this->authService->register($request->all());
+        	$this->authService->registerAdmin($request->all());
 
         	DB::commit();
 
-        	return redirect()->route('/admin/login')->with('success', 'You have been successfully registered. Please Login!');
+        	return redirect()->route('admin.login')->with('success', 'You have been successfully registered. Please Login!');
         } catch (Exception $ex) {
-        	return redirect()->route('/register')->with('error', $ex->getMessage());
+            return $ex->getMessage();
+            DB::rollback();
+        	return redirect()->route('admin.register')->with('error', $ex->getMessage());
         }
     }
 
@@ -52,18 +51,29 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        $credentials['email'] = $request->email;
+        $credentials['password'] = $request->password;
+
         try {
-        	$admin = $this->authService->getAdminByEmail($request->email);
+            $admin = $this->authService->getAdminByEmail($request->email);
 
-        	$isAuthenticate = $this->authService->loginAdmin($admin, $request->all());
-        	if (!$isAuthenticate) {
-        		return redirect()->route('admin.login')->with('error', 'Invalid credentials. Try Again!');
-        	}
+            if(Auth::guard('admin')->attempt($credentials)) {
+                $this->authService->storeAdminToken($request->_token);
+                return redirect()->route('admin.dashboard')->with('success', 'Welcome, succussfully logged in.');
+            }
 
-        	return redirect()->route('dashboard')->with('success', 'Welcome, succussfully logged in.');
+            return redirect()->route('admin.login')->with('error', 'Invalid credentials. Try Again!');
+        	
         } catch(ModelNotFoundException $ex) {
         	return redirect()->route('admin.register')->with('info', 'Email not found. Register first');
 
         }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('admin')->logout();
+
+        return redirect()->route('admin.login')->with('success', 'Logout successfully');
     }
 }

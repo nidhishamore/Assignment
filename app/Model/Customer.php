@@ -5,20 +5,20 @@ namespace App\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Hash;
 
-class Admin extends Authenticatable
+class Customer extends Authenticatable
 {
-	/**
+    /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = 'admin_id';
+    protected $primaryKey = 'customer_id';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['admin_id','name', 'email', 'status', 'password'];
+    protected $fillable = ['customer_id','first_name', 'last_name', 'contact_number', 'email', 'status', 'password'];
     
     protected $hidden = ['password', 'remember_token'];
     /**
